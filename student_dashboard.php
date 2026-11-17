@@ -18,16 +18,11 @@ $full_name = $username;
 $dob = '';
 
 $subjects_map = [
-    'history'   => 'History',
-    'geo'       => 'Geography',
-    'math'      => 'Mathematics',
-    'english'   => 'English',
-    'physics'   => 'Physics',
-    'pe'        => 'Physical Education (P.E.)',
-    'chemistry' => 'Chemistry',
-    'arts'      => 'Arts',
-    'music'     => 'Music',
-    'bio'       => 'Biology'
+    'history' => 'History', 'geo' => 'Geography', 'math' => 'Mathematics',
+    'english' => 'English', 'physics' => 'Physics', 'pe' => 'P.E.',
+    'chemistry' => 'Chemistry', 'arts' => 'Arts', 'music' => 'Music',
+     'bio' => 'Biology', 'info' => 'Informatics', 'vjer' => 'Religion',
+     'teh' => 'Technical Education', 'soc' => 'Social Studies', 'ger' => 'German'
 ];
 
 $student_grades = [];

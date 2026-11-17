@@ -15,7 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $subjects_map = [
     'history' => 'History', 'geo' => 'Geography', 'math' => 'Mathematics',
     'english' => 'English', 'physics' => 'Physics', 'pe' => 'P.E.',
-    'chemistry' => 'Chemistry', 'arts' => 'Arts', 'music' => 'Music', 'bio' => 'Biology'
+    'chemistry' => 'Chemistry', 'arts' => 'Arts', 'music' => 'Music',
+     'bio' => 'Biology', 'info' => 'Informatics', 'vjer' => 'Religion',
+     'teh' => 'Technical Education', 'soc' => 'Social Studies', 'ger' => 'German'
 ];
 
 $action     = $_POST['action'] ?? '';

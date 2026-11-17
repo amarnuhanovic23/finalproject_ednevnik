@@ -14,8 +14,10 @@ $error_msg        = $_GET['error'] ?? '';
 
 $subjects_map = [
     'history' => 'History', 'geo' => 'Geography', 'math' => 'Mathematics',
-    'english' => 'English', 'physics' => 'Physics', 'pe' => 'Physical Education (P.E.)',
-    'chemistry' => 'Chemistry', 'arts' => 'Arts', 'music' => 'Music', 'bio' => 'Biology'
+    'english' => 'English', 'physics' => 'Physics', 'pe' => 'P.E.',
+    'chemistry' => 'Chemistry', 'arts' => 'Arts', 'music' => 'Music',
+     'bio' => 'Biology', 'info' => 'Informatics', 'vjer' => 'Religion',
+     'teh' => 'Technical Education', 'soc' => 'Social Studies', 'ger' => 'German'
 ];
 
 $students = $conn->query("SELECT id, name, surname, dob, username FROM users WHERE role = 'student' ORDER BY surname ASC, name ASC")->fetchAll(PDO::FETCH_ASSOC);

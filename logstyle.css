@@ -1,4 +1,32 @@
 
-html, body {
-    background-color: lightgray;
+body {
+    background-color: #09090b;
+    color: #e4e4e7;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-card {
+    background-color: #121215;
+    border: 1px solid #242429;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.custom-input {
+    background-color: #18181c;
+    border: 1px solid #2c2c34;
+    color: #ffffff;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+}
+
+.custom-input:focus {
+    background-color: #1c1c21;
+    border-color: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.hover-white:hover {
+    color: #ffffff !important;
 }

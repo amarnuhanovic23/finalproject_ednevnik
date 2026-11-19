@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// Only redirect if the user is ALREADY logged in
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'student') {
         header("Location: dashboard.php");

@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// Block direct GET access
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: login.php");
     exit();
@@ -16,12 +15,10 @@ if ($username === '' || $password === '') {
     exit();
 }
 
-// Fetch user by username
 $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
 $stmt->execute([$username]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Verify password (supports both password_hash() and plain-text test rows)
 $password_valid = false;
 if ($user) {
     if (password_verify($password, $user['password'])) {
@@ -36,13 +33,11 @@ if (!$user || !$password_valid) {
     exit();
 }
 
-// Prevent session fixation and store required session variables
 session_regenerate_id(true);
 $_SESSION['user_id']  = $user['id'];
 $_SESSION['username'] = $user['username'];
 $_SESSION['role']     = $user['role'];
 
-// Redirect based on role
 if ($user['role'] === 'student') {
     header("Location: student_dashboard.php");
     exit();

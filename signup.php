@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// Redirect if already logged in
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'student') {
         header("Location: student_dashboard.php");

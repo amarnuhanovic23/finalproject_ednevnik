@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// If already logged in, redirect to the appropriate dashboard
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'admin') {
         header("Location: teacher_dashboard.php");

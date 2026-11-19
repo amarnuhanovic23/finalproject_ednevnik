@@ -57,6 +57,8 @@ foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
 $absStmt = $conn->prepare("SELECT subject, absence_date, period, status, note FROM attendance WHERE student_id = ? ORDER BY absence_date DESC, period ASC");
 $absStmt->execute([$student_id]);
 $absences = $absStmt->fetchAll(PDO::FETCH_ASSOC);
+$tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+
 
 $unexcused_count = 0;
 $excused_count   = 0;
@@ -133,6 +135,12 @@ function getStatusBadge($avg) {
                             <i class="bi bi-clock-history me-1"></i> View Schedule
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                         <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tournaments" type="button" role="tab">
+                             <i class="bi bi-trophy me-1"></i> Tournaments &amp; Clubs
+                        </button>
+                    </li>
+
                 </ul>
 
                 <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
@@ -362,11 +370,57 @@ function getStatusBadge($avg) {
                 </div>
             </div>
 
+            <div class="tab-pane fade" id="tournaments" role="tabpanel">
+                <div class="content-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-semibold text-white mb-0">Tournaments, Results &amp; Extracurriculars</h5>
+                        <input type="text" id="tourSearch" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Search..." style="max-width: 220px;">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0 custom-table" id="tourTable">
+                            <thead>
+                                <tr>
+                                    <th>Event / Club</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Winner / Members</th>
+                                    <th>Result / Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($tournaments)): ?>
+                                    <tr><td colspan="5" class="text-center text-secondary py-4">No tournaments or clubs added yet.</td></tr>
+                                <?php else: foreach ($tournaments as $t): ?>
+                                    <tr>
+                                        <td class="text-white fw-medium"><?php echo htmlspecialchars($t['title']); ?></td>
+                                        <td><span class="badge bg-primary-subtle text-primary"><?php echo htmlspecialchars($t['type']); ?></span></td>
+                                        <td><?php echo htmlspecialchars($t['event_date']); ?></td>
+                                        <td class="text-warning fw-semibold"><?php echo htmlspecialchars($t['winner']); ?></td>
+                                        <td class="text-secondary"><?php echo htmlspecialchars($t['result']); ?></td>
+                                    </tr>
+                                <?php endforeach; endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </main>
 
      <?php
     echo '<script src="https://' . 'cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>';
     ?>
+
+    <script>
+document.getElementById('tourSearch')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#tourTable tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+</script>
+
 </body>
 </html>

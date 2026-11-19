@@ -59,6 +59,7 @@ if ($selected_student_id > 0) {
 
 $totalSystemGrades   = (int)$conn->query("SELECT COUNT(*) FROM grades")->fetchColumn();
 $totalSystemAbsences = (int)$conn->query("SELECT COUNT(*) FROM attendance")->fetchColumn();
+$tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
@@ -86,6 +87,7 @@ $totalSystemAbsences = (int)$conn->query("SELECT COUNT(*) FROM attendance")->fet
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='grades'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-grades" type="button"><i class="bi bi-pencil-square me-1"></i>Grades</button></li>
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='attendance'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-attendance" type="button"><i class="bi bi-calendar-x me-1"></i>Absences</button></li>
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='students'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-students" type="button"><i class="bi bi-people me-1"></i>Students</button></li>
+                <li class="nav-item"><button class="nav-link <?php echo $active_tab==='tournaments'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-tournaments" type="button"><i class="bi bi-trophy me-1"></i>Tournaments</button></li>
             </ul>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-secondary small"><i class="bi bi-person-badge me-1"></i><?php echo $teacher_username; ?></span>
@@ -280,6 +282,53 @@ $totalSystemAbsences = (int)$conn->query("SELECT COUNT(*) FROM attendance")->fet
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade <?php echo $active_tab==='tournaments'?'show active':''; ?>" id="tab-tournaments">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="content-card p-4">
+                <h5 class="fw-semibold text-white mb-3">Add Tournament / Club</h5>
+                <form method="POST" action="teacher_actions.php">
+                    <input type="hidden" name="action" value="add_tournament">
+                    <div class="mb-2"><label class="form-label text-secondary small">Title</label><input type="text" class="form-control bg-dark text-white border-secondary" name="title" placeholder="e.g. Futsal Cup" required></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Type</label><input type="text" class="form-control bg-dark text-white border-secondary" name="type" placeholder="Tournament / Club" required></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Date</label><input type="text" class="form-control bg-dark text-white border-secondary" name="event_date" placeholder="e.g. 20.11.2026" required></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Winner / Participants</label><input type="text" class="form-control bg-dark text-white border-secondary" name="winner" placeholder="e.g. Amar Nuhanović"></div>
+                    <div class="mb-3"><label class="form-label text-secondary small">Result / Score</label><input type="text" class="form-control bg-dark text-white border-secondary" name="result" placeholder="e.g. 1st Place (3:1)"></div>
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">Save Event</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="content-card p-4">
+                <h5 class="fw-semibold text-white mb-3">All Tournaments &amp; Clubs</h5>
+                <table class="table table-dark table-hover align-middle mb-0 custom-table">
+                    <thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Winner</th><th>Result</th><th class="text-end">Delete</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($tournaments as $t): ?>
+                        <tr>
+                            <td class="text-white fw-medium"><?php echo htmlspecialchars($t['title']); ?></td>
+                            <td><?php echo htmlspecialchars($t['type']); ?></td>
+                            <td><?php echo htmlspecialchars($t['event_date']); ?></td>
+                            <td class="text-warning"><?php echo htmlspecialchars($t['winner']); ?></td>
+                            <td><?php echo htmlspecialchars($t['result']); ?></td>
+                            <td class="text-end">
+                                <form method="POST" action="teacher_actions.php" class="d-inline">
+                                    <input type="hidden" name="action" value="delete_tournament">
+                                    <input type="hidden" name="tournament_id" value="<?php echo $t['id']; ?>">
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div>
 </main>
 

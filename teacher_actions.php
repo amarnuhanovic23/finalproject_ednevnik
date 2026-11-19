@@ -148,5 +148,28 @@ if ($action === 'delete_student') {
     redirectWithMsg('students', 0, 'success', 'Student deleted.');
 }
 
+if ($action === 'add_tournament') {
+    $title  = trim($_POST['title'] ?? '');
+    $type   = trim($_POST['type'] ?? '');
+    $date   = trim($_POST['event_date'] ?? '');
+    $winner = trim($_POST['winner'] ?? '');
+    $result = trim($_POST['result'] ?? '');
+
+    if ($title !== '') {
+        $conn->prepare("INSERT INTO tournaments (title, type, event_date, winner, result) VALUES (?, ?, ?, ?, ?)")
+             ->execute([$title, $type, $date, $winner, $result]);
+    }
+    redirectWithMsg('tournaments', $student_id, 'success', 'Event saved!');
+}
+
+if ($action === 'delete_tournament') {
+    $tid = (int)($_POST['tournament_id'] ?? 0);
+    if ($tid > 0) {
+        $conn->prepare("DELETE FROM tournaments WHERE id = ?")->execute([$tid]);
+    }
+    redirectWithMsg('tournaments', $student_id, 'success', 'Event deleted.');
+}
+
+
 header("Location: teacher_dashboard.php");
 exit();

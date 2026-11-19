@@ -13,7 +13,6 @@ body {
     min-height: 100vh;
 }
 
-/* Navbar */
 .custom-navbar {
     background-color: rgba(9, 9, 11, 0.85);
     backdrop-filter: blur(12px);
@@ -33,7 +32,6 @@ body {
     font-size: 1rem;
 }
 
-/* Navigation Pills */
 .nav-pills .nav-link {
     color: #a1a1aa;
     font-weight: 500;
@@ -54,7 +52,6 @@ body {
     border: 1px solid #32323a;
 }
 
-/* Cards */
 .stat-card,
 .content-card {
     background-color: var(--bg-surface);
@@ -78,7 +75,6 @@ body {
     font-size: 1.3rem;
 }
 
-/* Custom Dark Tables */
 .custom-table {
     --bs-table-bg: transparent;
     --bs-table-hover-bg: var(--bg-surface-hover);
@@ -100,7 +96,6 @@ body {
     color: #d4d4d8;
 }
 
-/* Grade Badges */
 .grade-pill {
     display: inline-flex;
     align-items: center;

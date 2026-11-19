@@ -170,6 +170,23 @@ if ($action === 'delete_tournament') {
     redirectWithMsg('tournaments', $student_id, 'success', 'Event deleted.');
 }
 
+if ($action === 'save_schedule') {
+    $class_name = trim($_POST['class_name'] ?? '7-1');
+    $period     = (int)($_POST['period'] ?? 1);
+    $mon        = trim($_POST['monday'] ?? '—');
+    $tue        = trim($_POST['tuesday'] ?? '—');
+    $wed        = trim($_POST['wednesday'] ?? '—');
+    $thu        = trim($_POST['thursday'] ?? '—');
+    $fri        = trim($_POST['friday'] ?? '—');
+
+    $conn->prepare("DELETE FROM schedule WHERE class_name = ? AND period = ?")->execute([$class_name, $period]);
+    $conn->prepare("INSERT INTO schedule (class_name, period, monday, tuesday, wednesday, thursday, friday) VALUES (?, ?, ?, ?, ?, ?, ?)")
+         ->execute([$class_name, $period, $mon, $tue, $wed, $thu, $fri]);
+
+    header("Location: teacher_dashboard.php?tab=schedule&class=" . $class_name . "&success=Schedule+saved");
+    exit();
+}
+
 
 header("Location: teacher_dashboard.php");
 exit();

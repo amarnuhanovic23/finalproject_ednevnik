@@ -87,6 +87,12 @@ function getStatusBadge($avg) {
     if ($avg >= 1.5) return '<span class="badge bg-warning-subtle text-warning">Sufficient (2)</span>';
     return '<span class="badge bg-danger-subtle text-danger">Insufficient (1)</span>';
 }
+
+$student_class = $_GET['class'] ?? '7-1';
+$sStmt         = $conn->prepare("SELECT * FROM schedule WHERE class_name = ? ORDER BY period ASC");
+$sStmt->execute([$student_class]);
+$my_schedule   = $sStmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
@@ -324,52 +330,6 @@ function getStatusBadge($avg) {
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="schedule" role="tabpanel">
-                <div class="content-card p-4">
-                    <h5 class="fw-semibold text-white mb-3">Weekly Class Schedule</h5>
-                    <div class="table-responsive">
-                        <table class="table table-dark table-bordered align-middle mb-0 custom-table text-center">
-                            <thead>
-                                <tr>
-                                    <th>Period</th>
-                                    <th>Monday</th>
-                                    <th>Tuesday</th>
-                                    <th>Wednesday</th>
-                                    <th>Thursday</th>
-                                    <th>Friday</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-secondary small">1st (08:00)</td>
-                                    <td class="text-white">Mathematics</td>
-                                    <td class="text-white">English</td>
-                                    <td class="text-white">Physics</td>
-                                    <td class="text-white">Chemistry</td>
-                                    <td class="text-white">History</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-secondary small">2nd (08:50)</td>
-                                    <td class="text-white">Biology</td>
-                                    <td class="text-white">Geography</td>
-                                    <td class="text-white">Mathematics</td>
-                                    <td class="text-white">Arts</td>
-                                    <td class="text-white">P.E.</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-secondary small">3rd (09:50)</td>
-                                    <td class="text-white">Physics</td>
-                                    <td class="text-white">Music</td>
-                                    <td class="text-white">English</td>
-                                    <td class="text-white">Biology</td>
-                                    <td class="text-white">Chemistry</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <div class="tab-pane fade" id="tournaments" role="tabpanel">
                 <div class="content-card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -404,6 +364,36 @@ function getStatusBadge($avg) {
                     </div>
                 </div>
             </div>
+
+            <div class="tab-pane fade" id="schedule" role="tabpanel">
+                <div class="content-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-semibold text-white mb-0">Class Schedule: <?php echo htmlspecialchars($student_class); ?></h5>
+                        <form method="GET" class="d-flex gap-2">
+                            <input type="text" name="class" class="form-control form-control-sm bg-dark text-white border-secondary" value="<?php echo htmlspecialchars($student_class); ?>" placeholder="7-1, 8-3..." style="width:110px;">
+                            <button class="btn btn-sm btn-outline-primary">View</button>
+                        </form>
+                    </div>
+                    <table class="table table-dark table-bordered align-middle mb-0 custom-table text-center">
+                        <thead><tr><th>Period</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr></thead>
+                        <tbody>
+                            <?php if (empty($my_schedule)): ?>
+                                <tr><td colspan="6" class="text-secondary py-4">No schedule saved for <?php echo htmlspecialchars($student_class); ?> yet.</td></tr>
+                            <?php else: foreach ($my_schedule as $r): ?>
+                                <tr>
+                                    <td class="text-secondary fw-bold"><?php echo (int)$r['period']; ?>.</td>
+                                    <td class="text-white"><?php echo htmlspecialchars($r['monday']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($r['tuesday']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($r['wednesday']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($r['thursday']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($r['friday']); ?></td>
+                                </tr>
+                            <?php endforeach; endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
 
 
         </div>

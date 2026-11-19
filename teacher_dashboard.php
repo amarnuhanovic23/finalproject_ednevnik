@@ -60,6 +60,12 @@ if ($selected_student_id > 0) {
 $totalSystemGrades   = (int)$conn->query("SELECT COUNT(*) FROM grades")->fetchColumn();
 $totalSystemAbsences = (int)$conn->query("SELECT COUNT(*) FROM attendance")->fetchColumn();
 $tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+
+$selected_class = $_GET['class'] ?? '7-1';
+$schedStmt      = $conn->prepare("SELECT * FROM schedule WHERE class_name = ? ORDER BY period ASC");
+$schedStmt->execute([$selected_class]);
+$class_schedule = $schedStmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
@@ -88,6 +94,7 @@ $tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetch
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='attendance'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-attendance" type="button"><i class="bi bi-calendar-x me-1"></i>Absences</button></li>
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='students'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-students" type="button"><i class="bi bi-people me-1"></i>Students</button></li>
                 <li class="nav-item"><button class="nav-link <?php echo $active_tab==='tournaments'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-tournaments" type="button"><i class="bi bi-trophy me-1"></i>Tournaments</button></li>
+                <li class="nav-item"><button class="nav-link <?php echo $active_tab==='schedule'?'active':''; ?>" data-bs-toggle="pill" data-bs-target="#tab-schedule" type="button"><i class="bi bi-calendar3 me-1"></i>Schedule</button></li>
             </ul>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-secondary small"><i class="bi bi-person-badge me-1"></i><?php echo $teacher_username; ?></span>
@@ -299,7 +306,7 @@ $tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetch
                 </form>
             </div>
         </div>
-        
+
         <div class="col-lg-8">
             <div class="content-card p-4">
                 <h5 class="fw-semibold text-white mb-3">All Tournaments &amp; Clubs</h5>
@@ -328,6 +335,57 @@ $tournaments = $conn->query("SELECT * FROM tournaments ORDER BY id DESC")->fetch
         </div>
     </div>
 </div>
+
+<div class="tab-pane fade <?php echo $active_tab==='schedule'?'show active':''; ?>" id="tab-schedule">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="content-card p-4">
+                <h5 class="fw-semibold text-white mb-3">Edit Class Schedule</h5>
+                <form method="POST" action="teacher_actions.php">
+                    <input type="hidden" name="action" value="save_schedule">
+                    <div class="row g-2 mb-2">
+                        <div class="col-7"><label class="form-label text-secondary small">Class (7-1, 8-3)</label><input type="text" class="form-control bg-dark text-white border-secondary" name="class_name" value="<?php echo htmlspecialchars($selected_class); ?>" required></div>
+                        <div class="col-5"><label class="form-label text-secondary small">Period (1–7)</label><input type="number" class="form-control bg-dark text-white border-secondary" name="period" min="1" max="7" value="1" required></div>
+                    </div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Monday</label><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" name="monday"></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Tuesday</label><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" name="tuesday"></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Wednesday</label><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" name="wednesday"></div>
+                    <div class="mb-2"><label class="form-label text-secondary small">Thursday</label><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" name="thursday"></div>
+                    <div class="mb-3"><label class="form-label text-secondary small">Friday</label><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" name="friday"></div>
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">Save Period</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="content-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-semibold text-white mb-0">Schedule: <?php echo htmlspecialchars($selected_class); ?></h5>
+                    <form method="GET" class="d-flex gap-2">
+                        <input type="hidden" name="tab" value="schedule">
+                        <input type="text" name="class" class="form-control form-control-sm bg-dark text-white border-secondary" value="<?php echo htmlspecialchars($selected_class); ?>" style="width:100px;">
+                        <button class="btn btn-sm btn-outline-primary">Load</button>
+                    </form>
+                </div>
+                <table class="table table-dark table-bordered align-middle mb-0 custom-table text-center">
+                    <thead><tr><th>Period</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($class_schedule as $r): ?>
+                        <tr>
+                            <td class="text-secondary fw-bold"><?php echo (int)$r['period']; ?>.</td>
+                            <td class="text-white"><?php echo htmlspecialchars($r['monday']); ?></td>
+                            <td class="text-white"><?php echo htmlspecialchars($r['tuesday']); ?></td>
+                            <td class="text-white"><?php echo htmlspecialchars($r['wednesday']); ?></td>
+                            <td class="text-white"><?php echo htmlspecialchars($r['thursday']); ?></td>
+                            <td class="text-white"><?php echo htmlspecialchars($r['friday']); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     </div>
 </main>
